@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com';
 const ENQUIRY_ENDPOINT = `${API_BASE_URL}/api/enquiries`;
 
 export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
