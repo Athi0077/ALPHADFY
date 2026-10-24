@@ -34,6 +34,25 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Diagnostic check for email configuration
+app.get('/api/email-status', (req, res) => {
+  res.json({
+    status: 'ok',
+    adminEmail: process.env.ADMIN_EMAIL || 'azhaghiriv@gmail.com',
+    hasResendApiKey: Boolean(process.env.RESEND_API_KEY),
+    hasWeb3FormsKey: Boolean(process.env.WEB3FORMS_ACCESS_KEY),
+    hasSmtpUser: Boolean(process.env.SMTP_USER),
+    hasSmtpPass: Boolean(process.env.SMTP_PASS),
+    activeMethod: process.env.RESEND_API_KEY
+      ? 'Resend HTTP API (Recommended for Cloud)'
+      : process.env.WEB3FORMS_ACCESS_KEY
+      ? 'Web3Forms HTTP API'
+      : process.env.SMTP_USER
+      ? 'Nodemailer SMTP (Note: blocked on Render Free Tier)'
+      : 'Simulation Mode (No credentials)',
+  });
+});
+
 /**
  * POST /api/enquiries & /api/enquiry
  * Main insurance enquiry endpoint
