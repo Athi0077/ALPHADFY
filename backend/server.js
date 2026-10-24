@@ -10,6 +10,15 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors()); 
+
+// Normalize multiple slashes in request URLs (e.g. //api/enquiries -> /api/enquiries)
+app.use((req, res, next) => {
+  if (req.url) {
+    req.url = req.url.replace(/\/{2,}/g, '/');
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,10 +35,10 @@ app.get('/api/health', (req, res) => {
 });
 
 /**
- * POST /api/enquiries
+ * POST /api/enquiries & /api/enquiry
  * Main insurance enquiry endpoint
  */
-app.post('/api/enquiries', async (req, res) => {
+app.post(['/api/enquiries', '/api/enquiry'], async (req, res) => {
   try {
     const data = req.body.data || req.body;
     const name = data.name?.trim();
@@ -80,21 +89,20 @@ app.post('/api/enquiries', async (req, res) => {
     enquirySubmissions.push(enquiryRecord);
     console.log('[Enquiry Successfully Stored]:', enquiryRecord);
 
-    // 2. Dispatch email via Nodemailer
-    try {
-      await sendEnquiryEmail({
-        name,
-        email,
-        phone,
-        insuranceType,
-      });
-    } catch (emailErr) {
+    // 2. Dispatch email asynchronously in the background so slow SMTP / network issues never block or fail the user's submission
+    sendEnquiryEmail({
+      name,
+      email,
+      phone,
+      insuranceType,
+    }).catch((emailErr) => {
       console.error('⚠️ [Email Delivery Warning]:', emailErr.message);
-    }
+    });
 
     return res.status(200).json({
       success: true,
       message: 'Enquiry submitted successfully',
+      id: enquiryRecord.id,
     });
   } catch (err) {
     console.error('[Enquiry Processing Error]:', err.message);
@@ -106,14 +114,14 @@ app.post('/api/enquiries', async (req, res) => {
   }
 });
 
-// Backward-compatible alias for /api/quotes
-app.post('/api/quotes', async (req, res, next) => {
+// Backward-compatible alias for /api/quotes and /api/quote
+app.post(['/api/quotes', '/api/quote'], async (req, res, next) => {
   req.url = '/api/enquiries';
   return app._router.handle(req, res, next);
 });
 
 // List Enquiries (for admin review)
-app.get('/api/enquiries', (req, res) => {
+app.get(['/api/enquiries', '/api/enquiry'], (req, res) => {
   res.json({
     success: true,
     count: enquirySubmissions.length,
@@ -121,7 +129,7 @@ app.get('/api/enquiries', (req, res) => {
   });
 });
 
-app.get('/api/quotes', (req, res) => {
+app.get(['/api/quotes', '/api/quote'], (req, res) => {
   res.json({
     success: true,
     count: enquirySubmissions.length,

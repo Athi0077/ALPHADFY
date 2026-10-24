@@ -27,6 +27,9 @@ const createTransporter = () => {
     tls: {
       rejectUnauthorized: false, // Prevents self-signed cert blocks on local Windows dev environments
     },
+    connectionTimeout: 8000, // 8s timeout to prevent hanging on blocked cloud ports
+    greetingTimeout: 8000,
+    socketTimeout: 8000,
   });
 };
 
@@ -109,7 +112,15 @@ Please contact the customer regarding this enquiry.`;
     html: htmlContent,
   };
 
-  const info = await transporter.sendMail(mailOptions);
-  console.log(`✅ [Real Email Delivered to ${adminEmail}]: Message ID ${info.messageId}`);
-  return info;
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ [Real Email Delivered to ${adminEmail}]: Message ID ${info.messageId}`);
+    return info;
+  } catch (mailErr) {
+    console.error(`⚠️ [Email Delivery Warning]: Failed to deliver email - ${mailErr.message}`);
+    return {
+      failed: true,
+      error: mailErr.message,
+    };
+  }
 }

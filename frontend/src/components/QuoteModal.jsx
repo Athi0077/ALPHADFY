@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com';
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com').trim();
+const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
 const ENQUIRY_ENDPOINT = `${API_BASE_URL}/api/enquiries`;
 
 export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
@@ -120,7 +121,7 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
         // Server or email failure
         setMessage({
           type: 'error',
-          text: 'Unable to submit your enquiry. Please try again.',
+          text: result?.message || 'Unable to submit your enquiry. Please try again.',
         });
       }
     } catch (err) {
