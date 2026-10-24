@@ -2,20 +2,16 @@ import React, { useState, useEffect } from 'react';
 
 const ROTATING_ICONS = [
   {
-    icon: 'fa-house',
-    label: 'Home Insurance',
-  },
-  {
-    icon: 'fa-motorcycle',
-    label: 'Bike Insurance',
-  },
-  {
     icon: 'fa-heart-pulse',
     label: 'Health Insurance',
   },
   {
-    icon: 'fa-briefcase',
-    label: 'Business Insurance',
+    icon: 'fa-shield-halved',
+    label: 'General Insurance',
+  },
+  {
+    icon: 'fa-hand-holding-heart',
+    label: 'Life Insurance',
   },
 ];
 

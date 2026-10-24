@@ -11,25 +11,18 @@ export default function Insurance({ onSelectPlan }) {
       onCtaClick: () => onSelectPlan && onSelectPlan('Health Insurance'),
     },
     {
-      image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80',
-      label: 'Vehicle Insurance',
-      description: 'Full protection with zero depreciation, roadside assistance, and instant claim approval for cars & bikes.',
+      image: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=900&q=80',
+      label: 'General Insurance',
+      description: 'Extensive coverage protecting your travel, valuable assets, liabilities, and unexpected emergencies.',
       ctaText: 'Get Quote',
-      onCtaClick: () => onSelectPlan && onSelectPlan('Vehicle Insurance'),
+      onCtaClick: () => onSelectPlan && onSelectPlan('General Insurance'),
     },
     {
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
-      label: 'Home Insurance',
-      description: 'Safeguard your home structure, valuable belongings, and protection against fires & natural calamities.',
+      image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80',
+      label: 'Life Insurance',
+      description: "Secure your family's financial future with comprehensive term life coverage and guaranteed protection.",
       ctaText: 'Get Quote',
-      onCtaClick: () => onSelectPlan && onSelectPlan('Home Insurance'),
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80',
-      label: 'Business Insurance',
-      description: 'Protect your enterprise assets, workforce, and liabilities against financial hazards & business downtime.',
-      ctaText: 'Get Quote',
-      onCtaClick: () => onSelectPlan && onSelectPlan('Business Insurance'),
+      onCtaClick: () => onSelectPlan && onSelectPlan('Life Insurance'),
     },
   ];
 

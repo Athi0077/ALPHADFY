@@ -135,15 +135,15 @@ export default function Hero({ onOpenQuote, theme }) {
           )}
         </div>
 
-        {/* Floating Card 2: Vehicle */}
+        {/* Floating Card 2: General Insurance */}
         <div className="absolute bottom-2 right-2 sm:right-4 z-20 flex items-center gap-3 bg-white/95 dark:bg-[#131E33]/95 backdrop-blur-md border border-[#D9A441]/35 px-4 sm:px-5 py-3 rounded-2xl shadow-xl animate-float-two">
-          <span className="text-2xl sm:text-3xl">🚗</span>
+          <span className="text-2xl sm:text-3xl">🛡️</span>
           <div>
             <strong className="block text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
-              Vehicle Insurance
+              General Insurance
             </strong>
             <span className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Drive with confidence
+              All-round protection
             </span>
           </div>
         </div>

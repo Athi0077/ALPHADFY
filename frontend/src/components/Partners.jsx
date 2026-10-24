@@ -114,7 +114,7 @@ const partners = [
   },
   {
     name: 'Bajaj Allianz',
-    category: 'Motor & Health',
+    category: 'General & Health',
     LogoComponent: BajajLogo,
   },
   {

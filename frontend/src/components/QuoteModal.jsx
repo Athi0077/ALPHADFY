@@ -228,11 +228,9 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
               className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#18243C] border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white focus:outline-none focus:border-[#D9A441] focus:ring-2 focus:ring-[#D9A441]/20 transition-all text-sm disabled:opacity-70 cursor-pointer"
             >
               <option value="">Select Insurance Type</option>
-              <option value="Bike Insurance">Bike Insurance</option>
-              <option value="Home Insurance">Home Insurance</option>
               <option value="Health Insurance">Health Insurance</option>
-              <option value="Vehicle Insurance">Vehicle Insurance</option>
-              <option value="Business Insurance">Business Insurance</option>
+              <option value="General Insurance">General Insurance</option>
+              <option value="Life Insurance">Life Insurance</option>
               <option value="Other Insurance">Other Insurance</option>
             </select>
           </div>
