@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+@theme {
+  --color-gold: #D9A441;
+  --color-gold-bright: #F4C65D;
+  --color-gold-dark: #B88328;
+  --color-gold-subtle: rgba(217, 164, 65, 0.12);
+  --color-gold-glow: rgba(217, 164, 65, 0.28);
+  --color-primary-dark: #0B1220;
+  --color-deep-navy: #101827;
+  --color-navy-surface: #141E33;
+  --color-navy-card: #18243C;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+/* Gold Gradient Utilities */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #D9A441 0%, #F4C65D 50%, #B88328 100%);
+}
+
+.bg-gold-gradient-hover {
+  background: linear-gradient(135deg, #F4C65D 0%, #E5B34C 50%, #C49132 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D9A441 0%, #F4C65D 50%, #B88328 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shadow-gold {
+  box-shadow: 0 12px 28px -5px rgba(217, 164, 65, 0.38);
+}
+
+.shadow-gold-hover {
+  box-shadow: 0 16px 36px -4px rgba(217, 164, 65, 0.52);
+}
+
+/* Animations */
+@keyframes floatOne {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes floatTwo {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+@keyframes ambientPulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes bulbPulse {
+  0% {
+    opacity: 0.75;
+    stroke-width: 2.3;
+  }
+  100% {
+    opacity: 1;
+    stroke-width: 2.8;
+    filter: drop-shadow(0 0 5px rgba(244, 198, 93, 0.9));
+  }
+}
+
+@keyframes modalScaleUp {
+  from {
+    transform: scale(0.92) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-float-one {
+  animation: floatOne 4.5s ease-in-out infinite;
+}
+
+.animate-float-two {
+  animation: floatTwo 5s ease-in-out infinite;
+}
+
+.animate-ambient-pulse {
+  animation: ambientPulse 4s ease-in-out infinite alternate;
+}
+
+.animate-bulb-pulse {
+  animation: bulbPulse 2.5s ease-in-out infinite alternate;
+}
+
+.animate-modal {
+  animation: modalScaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes iconCycleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-icon-cycle {
+  animation: iconCycleIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Button Metallic Shine Animation (Left to Right every 2s) */
+@keyframes btnShine {
+  0% {
+    transform: translateX(-160%) skewX(-25deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  42% {
+    transform: translateX(260%) skewX(-25deg);
+    opacity: 1;
+  }
+  43% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(260%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.animate-btn-shine {
+  animation: btnShine 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Infinite Marquee Scroll Left to Right */
+@keyframes scrollLeftToRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  animation: scrollLeftToRight 35s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-ltr:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   Butterfly Animation Theme Adaptation
+   - Light Mode: Rich Gold butterfly (#D9A441 / #F4C65D / #B88328)
+   - Dark Mode: Glowing Pure White butterfly (#FFFFFF)
+   ============================================================ */
+
+/* LIGHT MODE (Default / Light theme) -> GOLD COLOR */
+#butterfly-bg .wing::before,
+#butterfly-bg .wing::after {
+  background: linear-gradient(135deg, #F4C65D 0%, #D9A441 55%, #B88328 100%) !important;
+  border: 1px solid rgba(184, 131, 40, 0.45) !important;
+  box-shadow: 0 0 6px rgba(217, 164, 65, 0.45) !important;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#butterfly-bg > div > div::after,
+#butterfly-bg div:not(.wing)::after {
+  background: linear-gradient(180deg, #D9A441 0%, #996B15 100%) !important;
+  box-shadow: 0 0 4px rgba(184, 131, 40, 0.6) !important;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#butterfly-bg > div > div {
+  filter: drop-shadow(0 2px 5px rgba(217, 164, 65, 0.45));
+  transition: filter 0.3s ease;
+}
+
+/* DARK MODE -> PURE WHITE COLOR */
+.dark #butterfly-bg .wing::before,
+.dark #butterfly-bg .wing::after,
+[data-theme="dark"] #butterfly-bg .wing::before,
+[data-theme="dark"] #butterfly-bg .wing::after,
+body.dark-mode #butterfly-bg .wing::before,
+body.dark-mode #butterfly-bg .wing::after,
+#butterfly-bg[data-theme="dark"] .wing::before,
+#butterfly-bg[data-theme="dark"] .wing::after {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.4) !important;
+}
+
+.dark #butterfly-bg > div > div::after,
+.dark #butterfly-bg div:not(.wing)::after,
+[data-theme="dark"] #butterfly-bg > div > div::after,
+[data-theme="dark"] #butterfly-bg div:not(.wing)::after,
+body.dark-mode #butterfly-bg > div > div::after,
+body.dark-mode #butterfly-bg div:not(.wing)::after,
+#butterfly-bg[data-theme="dark"] > div > div::after,
+#butterfly-bg[data-theme="dark"] div:not(.wing)::after {
+  background: #FFFFFF !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark #butterfly-bg > div > div,
+[data-theme="dark"] #butterfly-bg > div > div,
+body.dark-mode #butterfly-bg > div > div,
+#butterfly-bg[data-theme="dark"] > div > div {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.65)) !important;
+}
+
+
+
