@@ -120,19 +120,11 @@ export default function Hero({ onOpenQuote, theme }) {
           {/* Ambient Glow */}
           <div className="absolute -inset-3 rounded-[32px] bg-radial from-[#D9A441]/20 to-transparent -z-10 animate-ambient-pulse" />
 
-          {theme === 'dark' ? (
-            <img
-              src="/logo_footer.png"
-              alt="ALPHADFY"
-              className="w-full max-w-[240px] h-auto object-contain drop-shadow-md"
-            />
-          ) : (
-            <img
-              src="/screen1.png"
-              alt="ALPHADFY"
-              className="w-full max-w-[240px] h-auto object-contain drop-shadow-md"
-            />
-          )}
+          <img
+            src="/screen1.png"
+            alt="ALPHADFY"
+            className="w-full max-w-[240px] h-auto object-contain drop-shadow-md"
+          />
         </div>
 
         {/* Floating Card 2: General Insurance */}

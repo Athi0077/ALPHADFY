@@ -55,23 +55,13 @@ export default function Navbar({ onOpenQuote, theme, onToggleTheme }) {
           className="flex items-center transition-transform hover:scale-105"
           aria-label="ALPHADFY Home"
         >
-          {theme === 'dark' ? (
-            <img
-              src="/logo_footer.png"
-              alt="ALPHADFY"
-              className={`w-auto object-contain transition-all duration-300 ${
-                isScrolled ? 'h-9 max-w-[190px]' : 'h-11 max-w-[230px]'
-              }`}
-            />
-          ) : (
-            <img
-              src="/screen1.png"
-              alt="ALPHADFY"
-              className={`w-auto object-contain transition-all duration-300 ${
-                isScrolled ? 'h-9 max-w-[190px]' : 'h-11 max-w-[230px]'
-              }`}
-            />
-          )}
+          <img
+            src="/screen1.png"
+            alt="ALPHADFY"
+            className={`w-auto object-contain transition-all duration-300 ${
+              isScrolled ? 'h-9 max-w-[190px]' : 'h-11 max-w-[230px]'
+            }`}
+          />
         </a>
 
         {/* DESKTOP NAV LINKS */}

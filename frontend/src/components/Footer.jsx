@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Logo */}
           <a href="#home" onClick={(e) => scrollTo(e, 'home')} className="flex items-center">
             <img
-              src="/logo_footer.png"
+              src="/screen1.png"
               alt="ALPHADFY"
               className="h-12 w-auto object-contain transition-transform hover:scale-105"
             />
