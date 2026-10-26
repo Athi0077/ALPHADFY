@@ -94,7 +94,7 @@ export default function Navbar({ onOpenQuote, theme, onToggleTheme }) {
           {/* Phone pill */}
           <div className="hidden xl:flex items-center gap-1.5 text-[13.5px] font-bold text-slate-800 dark:text-slate-100 bg-[#D9A441]/10 dark:bg-[#D9A441]/15 border border-[#D9A441]/25 px-4 h-[38px] rounded-full tracking-wide">
             <span>📞</span>
-            <span>+91 9600669737</span>
+            <span>+91 8248324886</span>
           </div>
 
           {/* Get Quote Button */}
@@ -201,7 +201,7 @@ export default function Navbar({ onOpenQuote, theme, onToggleTheme }) {
           <div className="pt-2 flex flex-col gap-3">
             <div className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
               <span>📞</span>
-              <span>+91 9600669737</span>
+              <span>+91 8248324886</span>
             </div>
             <button
               onClick={() => {

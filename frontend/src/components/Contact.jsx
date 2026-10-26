@@ -16,9 +16,9 @@ const contactCards = [
     icon: PhoneCall,
     title: 'Phone Support',
     subtitle: 'Direct voice consultation',
-    value: '+91 9600669737',
+    value: '+91 8248324886',
     actionText: 'Call Directly',
-    href: 'tel:+919600669737',
+    href: 'tel:+918248324886',
     badge: 'Immediate',
     iconBg: 'bg-[#D9A441]/15 text-[#B88328] dark:text-[#F4C65D] border-[#D9A441]/30',
   },
@@ -27,9 +27,9 @@ const contactCards = [
     icon: MessageCircle,
     title: 'WhatsApp Chat',
     subtitle: 'Instant answers & document help',
-    value: '+91 9600669737',
+    value: '+91 8248324886',
     actionText: 'Start WhatsApp Chat',
-    href: 'https://wa.me/919600669737?text=Hi%20Alphadfy,%20I%20would%20like%20to%20know%20more%20about%20your%20insurance%20services.',
+    href: 'https://wa.me/918248324886?text=Hi%20Alphadfy,%20I%20would%20like%20to%20know%20more%20about%20your%20insurance%20services.',
     badge: 'Instant Reply',
     iconBg: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
   },
@@ -38,9 +38,9 @@ const contactCards = [
     icon: Mail,
     title: 'Email Inquiries',
     subtitle: 'Detailed policy quotes & claims',
-    value: 'azhaghiriv@gmail.com',
+    value: 'info@alphadfy.in',
     actionText: 'Drop an Email',
-    href: 'mailto:azhaghiriv@gmail.com',
+    href: 'mailto:info@alphadfy.in',
     badge: '< 2 hrs reply',
     iconBg: 'bg-[#D9A441]/15 text-[#B88328] dark:text-[#F4C65D] border-[#D9A441]/30',
   },
@@ -198,7 +198,7 @@ export default function Contact() {
         </div>
 
         <a
-          href="tel:+919600669737"
+          href="tel:+918248324886"
           className="shrink-0 px-6 py-2.5 rounded-xl bg-gold-gradient hover:bg-gold-gradient-hover text-[#0B1220] font-bold text-xs sm:text-sm tracking-wide shadow-gold hover:shadow-gold-hover transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
         >
           Call Emergency Desk

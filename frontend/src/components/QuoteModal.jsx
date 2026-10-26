@@ -207,7 +207,7 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
             <input
               type="tel"
               name="phone"
-              placeholder="e.g. +91 9600669737"
+              placeholder="e.g. +91 8248324886"
               value={formData.phone}
               onChange={handleChange}
               disabled={isSubmitting}
