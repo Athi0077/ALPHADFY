@@ -1,38 +1,34 @@
 import React from 'react';
-import CardSwap from './CardSwap';
+import GlareHover from './GlareHover';
 
-const trustItems = [
+const reasons = [
   {
-    title: '100% Secure & Protected',
+    icon: 'fa-shield-halved',
+    title: 'Secure',
     description: 'Your information is handled with absolute care, privacy, and industry-standard security protocols.',
-    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=900&q=80',
-    icon: <i className="fa-solid fa-shield-halved text-xs text-[#D9A441]" />
   },
   {
-    title: 'Fast & Instant Support',
-    description: 'Get swift, hassle-free claim assistance whenever you need it with our dedicated 24/7 advisor desk.',
-    image: 'https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=900&q=80',
-    icon: <i className="fa-solid fa-bolt text-xs text-[#D9A441]" />
+    icon: 'fa-bolt',
+    title: 'Fast Support',
+    description: 'Get swift, hassle-free claim assistance whenever you need it with our dedicated advisor desk.',
   },
   {
-    title: 'Affordable Rates & Plans',
+    icon: 'fa-coins',
+    title: 'Affordable',
     description: 'Flexible premium plans designed to accommodate varying personal and corporate budgets.',
-    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=900&q=80',
-    icon: <i className="fa-solid fa-coins text-xs text-[#D9A441]" />
   },
   {
-    title: 'Trusted by 15,000+ Clients',
+    icon: 'fa-handshake',
+    title: 'Trusted',
     description: 'Over 15,000 satisfied customers and businesses count on our proven track record.',
-    image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=80',
-    icon: <i className="fa-solid fa-handshake text-xs text-[#D9A441]" />
-  }
+  },
 ];
 
 export default function WhyUs({ theme = 'dark' }) {
   return (
     <section id="why-us" className="py-24 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10 flex flex-col items-center">
+      <div className="text-center max-w-2xl mx-auto mb-16 flex flex-col items-center">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D9A441]/10 border border-[#D9A441]/30 text-[#B88328] dark:text-[#F4C65D] text-xs font-bold tracking-[2.5px] uppercase mb-4">
           <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] shadow-[0_0_8px_#D9A441]" />
           WHY CHOOSE US
@@ -47,31 +43,49 @@ export default function WhyUs({ theme = 'dark' }) {
         </p>
       </div>
 
-      {/* CardSwap 3D Interactive Stack Container */}
-      <div className="w-full flex items-center justify-center py-4">
-        <div className="w-full max-w-4xl h-[480px] sm:h-[540px] relative">
-          <CardSwap
-            items={trustItems}
-            width={480}
-            height={340}
-            delay={4000}
-            cardDistance={60}
-            verticalDistance={65}
-            depth={90}
-            skewAmount={5}
-            visibleCards={4}
-            autoplay={true}
-            pauseOnHover={true}
-            draggable={true}
-            speed={1}
-            bounce={0.35}
-            parallax={0.5}
-            hoverSpread={0.12}
-            dim={0.5}
-            cardRadius={20}
-            theme={theme}
-          />
-        </div>
+      {/* Grid of GlareHover Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+        {reasons.map((item) => (
+          <GlareHover
+            key={item.title}
+            width="100%"
+            height="100%"
+            borderRadius="24px"
+            borderColor="rgba(217, 164, 65, 0.25)"
+            background="transparent"
+            mode="hover"
+            variant="streak"
+            glareColor="#ffffff"
+            glareOpacity={0.5}
+            glareSize={32}
+            softness={0.6}
+            glareAngle={-45}
+            blendMode="screen"
+            rimGlint={true}
+            transitionDuration={650}
+            className="group w-full h-full shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+          >
+            <div className="relative w-full h-full min-h-[300px] bg-white dark:bg-[#131E33] p-8 rounded-[24px] flex flex-col items-center text-center overflow-hidden border border-slate-200/80 dark:border-white/10">
+              {/* Top gold accent line */}
+              <span className="absolute top-0 left-1/4 right-1/4 h-[3px] bg-gold-gradient scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
+
+              {/* Icon Container */}
+              <div className="w-16 h-16 rounded-2xl bg-[#D9A441]/10 dark:bg-[#D9A441]/15 border border-[#D9A441]/25 flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(217,164,65,0.3)]">
+                <i className={`fa-solid ${item.icon} text-2xl text-[#D9A441]`}></i>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-[#B88328] dark:group-hover:text-[#F4C65D] transition-colors">
+                {item.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed flex-grow">
+                {item.description}
+              </p>
+            </div>
+          </GlareHover>
+        ))}
       </div>
     </section>
   );

@@ -38,18 +38,11 @@ app.get('/api/health', (req, res) => {
 app.get('/api/email-status', (req, res) => {
   res.json({
     status: 'ok',
-    adminEmail: process.env.ADMIN_EMAIL || 'azhaghiriv@gmail.com',
+    adminEmail: process.env.ADMIN_EMAIL || 'info@alphadfy.in',
     hasResendApiKey: Boolean(process.env.RESEND_API_KEY),
-    hasWeb3FormsKey: Boolean(process.env.WEB3FORMS_ACCESS_KEY),
-    hasSmtpUser: Boolean(process.env.SMTP_USER),
-    hasSmtpPass: Boolean(process.env.SMTP_PASS),
-    activeMethod: process.env.RESEND_API_KEY
-      ? 'Resend HTTP API (Recommended for Cloud)'
-      : process.env.WEB3FORMS_ACCESS_KEY
-      ? 'Web3Forms HTTP API'
-      : process.env.SMTP_USER
-      ? 'Nodemailer SMTP (Note: blocked on Render Free Tier)'
-      : 'Simulation Mode (No credentials)',
+    fromEmail: process.env.RESEND_FROM || 'ALPHADFY Insurance <info@alphadfy.in>',
+    provider: 'Resend HTTPS API',
+    configured: Boolean(process.env.RESEND_API_KEY),
   });
 });
 
@@ -108,14 +101,14 @@ app.post(['/api/enquiries', '/api/enquiry'], async (req, res) => {
     enquirySubmissions.push(enquiryRecord);
     console.log('[Enquiry Successfully Stored]:', enquiryRecord);
 
-    // 2. Dispatch email asynchronously in the background so slow SMTP / network issues never block or fail the user's submission
+    // 2. Dispatch email asynchronously in the background via Resend HTTPS API so network delays never block the response
     sendEnquiryEmail({
       name,
       email,
       phone,
       insuranceType,
     }).catch((emailErr) => {
-      console.error('⚠️ [Email Delivery Warning]:', emailErr.message);
+      console.error('❌ [Email Delivery Warning]:', emailErr.message);
     });
 
     return res.status(200).json({

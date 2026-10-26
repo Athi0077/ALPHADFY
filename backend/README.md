@@ -9,13 +9,23 @@ Express.js REST API service for quote requests, lead captures, and enquiry manag
    npm install
    ```
 
-2. Start development server:
+2. Configure environment variables in `.env`:
+   ```env
+   PORT=5000
+   NODE_ENV=production
+   ADMIN_EMAIL=info@alphadfy.in
+   RESEND_API_KEY=re_your_api_key_here
+   RESEND_FROM=ALPHADFY Insurance <info@alphadfy.in>
+   ```
+
+3. Start development server:
    ```bash
    npm run dev
    ```
 
-3. Endpoints:
+4. Endpoints:
    - `GET /api/health` - Health check status
-   - `POST /api/quotes` - Submit insurance quote request
-   - `GET /api/quotes` - Retrieve received enquiries
+   - `GET /api/email-status` - Email delivery service diagnostic status
+   - `POST /api/enquiries` - Submit insurance enquiry (sends notification via Resend HTTPS API)
+   - `GET /api/enquiries` - Retrieve stored enquiries
    - `POST /api/contact` - Submit general contact enquiry

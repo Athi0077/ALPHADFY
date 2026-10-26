@@ -1,66 +1,39 @@
-import nodemailer from 'nodemailer';
-
 /**
- * Creates and returns a Nodemailer transporter.
- * Supports standard SMTP (e.g., Gmail with App Password, Outlook, etc.).
- * Note: Render Free Tier blocks outbound ports 25, 465, and 587.
+ * ALPHADFY Insurance - Email Service
+ * 
+ * Uses Resend HTTPS API (port 443) for reliable email delivery.
+ * Render Free tier blocks outbound SMTP ports (25, 465, 587), so all emails
+ * are delivered directly via HTTPS REST requests to https://api.resend.com/emails.
  */
-const createTransporter = () => {
-  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = parseInt(process.env.SMTP_PORT, 10) || 587;
-  const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS?.trim();
-
-  if (!user || !pass) {
-    return null;
-  }
-
-  // If using Gmail, 'service: gmail' handles host, SSL and ports automatically
-  if (host.includes('gmail') || user.endsWith('@gmail.com')) {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user,
-        pass,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-      connectionTimeout: 8000,
-      greetingTimeout: 8000,
-      socketTimeout: 8000,
-    });
-  }
-
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465, // true for port 465, false for port 587
-    auth: {
-      user,
-      pass,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-    connectionTimeout: 8000,
-    greetingTimeout: 8000,
-    socketTimeout: 8000,
-  });
-};
 
 /**
- * Sends an email notification to the Admin with enquiry details.
- *
- * Supports multiple delivery methods:
- * 1. Resend HTTP API (HTTPS port 443 - Recommended, 100% works on Render Free Tier)
- * 2. Web3Forms HTTP API (HTTPS port 443 - Instant free HTTP form emailer)
- * 3. Nodemailer SMTP (Works locally or on paid cloud hosts)
+ * Sends an enquiry notification email to the Admin using Resend HTTPS API.
+ * 
+ * @param {Object} params
+ * @param {string} params.name Customer full name
+ * @param {string} params.email Customer email address
+ * @param {string} params.phone Customer phone number
+ * @param {string} params.insuranceType Insurance category requested
+ * @returns {Promise<{ success: boolean, provider: string, messageId?: string, error?: string }>}
  */
 export async function sendEnquiryEmail({ name, email, phone, insuranceType }) {
-  const adminEmail = process.env.ADMIN_EMAIL?.trim() || 'azhaghiriv@gmail.com';
+  const adminEmail = process.env.ADMIN_EMAIL?.trim() || 'info@alphadfy.in';
+  const fromEmail = process.env.RESEND_FROM?.trim() || 'ALPHADFY Insurance <info@alphadfy.in>';
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
   const subject = `New Insurance Enquiry - ${insuranceType}`;
 
+  // 1. Validate Resend API Configuration
+  if (!resendApiKey) {
+    const configError = 'RESEND_API_KEY is not configured in environment variables.';
+    console.error(`❌ [Resend Email Failed]: ${configError}`);
+    return {
+      success: false,
+      provider: 'resend',
+      error: configError,
+    };
+  }
+
+  // 2. Email Body Contents
   const textContent = `New Enquiry Received
 
 Name: ${name}
@@ -97,123 +70,57 @@ Please contact the customer regarding this enquiry.`;
     </div>
   `;
 
-  // 1. Resend HTTP REST API (Recommended for Render & cloud deployment)
-  const resendApiKey = process.env.RESEND_API_KEY?.trim();
-  if (resendApiKey) {
-    try {
-      const fromEmail = process.env.RESEND_FROM?.trim() || 'ALPHADFY Enquiries <onboarding@resend.dev>';
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromEmail,
-          to: [adminEmail],
-          reply_to: email,
-          subject,
-          html: htmlContent,
-          text: textContent,
-        }),
-      });
+  // 3. Dispatch via Resend HTTPS REST API
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: [adminEmail],
+        reply_to: email,
+        subject,
+        html: htmlContent,
+        text: textContent,
+      }),
+    });
 
-      const resData = await res.json();
-      if (res.ok) {
-        console.log(`✅ [Resend HTTP Email Delivered to ${adminEmail}]: ID ${resData.id}`);
-        return {
-          provider: 'resend',
-          success: true,
-          messageId: resData.id,
-        };
-      } else {
-        console.error('⚠️ [Resend API Error]:', resData);
-      }
-    } catch (resendErr) {
-      console.error('⚠️ [Resend Request Failed]:', resendErr.message);
-    }
-  }
+    const resData = await response.json().catch(() => ({}));
 
-  // 2. Web3Forms HTTP REST API (Zero signup alternative)
-  const web3FormsKey = process.env.WEB3FORMS_ACCESS_KEY?.trim();
-  if (web3FormsKey) {
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: web3FormsKey,
-          subject,
-          from_name: 'ALPHADFY Enquiry Alert',
-          name,
-          email,
-          phone,
-          insuranceType,
-          message: `New Insurance Enquiry Details:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nInsurance Type: ${insuranceType}`,
-        }),
-      });
-
-      const resData = await res.json();
-      if (resData.success) {
-        console.log(`✅ [Web3Forms HTTP Email Delivered to ${adminEmail}]`);
-        return {
-          provider: 'web3forms',
-          success: true,
-          data: resData,
-        };
-      } else {
-        console.error('⚠️ [Web3Forms API Error]:', resData);
-      }
-    } catch (w3Err) {
-      console.error('⚠️ [Web3Forms Request Failed]:', w3Err.message);
-    }
-  }
-
-  // 3. Nodemailer SMTP (Works locally; blocked by Render Free Tier)
-  const transporter = createTransporter();
-  if (transporter) {
-    const mailOptions = {
-      from: `"${process.env.SMTP_FROM_NAME || 'ALPHADFY Insurance'}" <${process.env.SMTP_USER}>`,
-      to: adminEmail,
-      replyTo: email,
-      subject,
-      text: textContent,
-      html: htmlContent,
-    };
-
-    try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`✅ [Nodemailer SMTP Delivered to ${adminEmail}]: Message ID ${info.messageId}`);
+    if (response.ok && resData?.id) {
+      console.log(`✅ [Resend HTTPS Email Delivered to ${adminEmail}]: ID ${resData.id}`);
       return {
-        provider: 'smtp',
         success: true,
-        messageId: info.messageId,
-      };
-    } catch (mailErr) {
-      console.error(`⚠️ [Nodemailer SMTP Delivery Warning]: ${mailErr.message}`);
-      return {
-        provider: 'smtp',
-        failed: true,
-        error: mailErr.message,
+        provider: 'resend',
+        messageId: resData.id,
       };
     }
+
+    const safeErrorMessage =
+      resData?.message ||
+      resData?.error ||
+      resData?.name ||
+      `HTTP status ${response.status}`;
+
+    console.error(`❌ [Resend Email Failed]: HTTP ${response.status} - ${safeErrorMessage}`);
+
+    return {
+      success: false,
+      provider: 'resend',
+      status: response.status,
+      error: safeErrorMessage,
+    };
+  } catch (fetchErr) {
+    const safeErrorMessage = fetchErr?.message || 'Network request failed';
+    console.error(`❌ [Resend Email Failed]: ${safeErrorMessage}`);
+
+    return {
+      success: false,
+      provider: 'resend',
+      error: safeErrorMessage,
+    };
   }
-
-  // 4. Fallback / Dev Mode when no credentials are configured
-  console.log('\n==================================================');
-  console.log('ℹ️  [ENQUIRY EMAIL SIMULATION - NO EMAIL CREDS FOUND]');
-  console.log(`To: ${adminEmail}`);
-  console.log(`Subject: ${subject}`);
-  console.log(`Customer: ${name} (${email}, ${phone})`);
-  console.log(`Product: ${insuranceType}`);
-  console.log('Add RESEND_API_KEY (Recommended) or SMTP_USER & SMTP_PASS in Render Dashboard -> Environment.');
-  console.log('==================================================\n');
-
-  return {
-    simulated: true,
-    messageId: `simulated-${Date.now()}`,
-  };
 }

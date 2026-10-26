@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com').trim();
 const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
 const ENQUIRY_ENDPOINT = `${API_BASE_URL}/api/enquiries`;
-const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || 'cd563525-6089-4bd7-b3c8-8b77ecd2ef4f';
 
 export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
   const [formData, setFormData] = useState({
@@ -88,8 +87,7 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
     setIsSubmitting(true);
 
     try {
-      // 1. Send to backend database for store & record keeping
-      const backendPromise = fetch(ENQUIRY_ENDPOINT, {
+      const response = await fetch(ENQUIRY_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,39 +99,11 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
           phone: phone.trim(),
           insuranceType: plan,
         }),
-      }).catch((err) => {
-        console.warn('[Backend Store Notice]:', err);
-        return null;
       });
 
-      // 2. Direct browser-to-email dispatch via Web3Forms (Guaranteed delivery, bypasses cloud port blocks)
-      const emailPromise = fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New Insurance Enquiry - ${plan}`,
-          from_name: 'ALPHADFY Insurance Leads',
-          name: name.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          insuranceType: plan,
-          message: `New Insurance Enquiry Received:\n\nCustomer Name: ${name.trim()}\nEmail: ${email.trim()}\nPhone: ${phone.trim()}\nInsurance Type: ${plan}\nSubmission Date: ${new Date().toLocaleString()}`,
-        }),
-      }).catch((err) => {
-        console.warn('[Email Dispatch Notice]:', err);
-        return null;
-      });
+      const data = await response.json().catch(() => null);
 
-      const [backendRes, emailRes] = await Promise.all([backendPromise, emailPromise]);
-      const backendData = backendRes ? await backendRes.json().catch(() => null) : null;
-      const emailData = emailRes ? await emailRes.json().catch(() => null) : null;
-
-      // As long as either the backend store or the email dispatch succeeded, treat as successful!
-      if ((backendRes && backendRes.ok) || (emailData && emailData.success)) {
+      if (response.ok && data?.success) {
         // Success state
         setMessage({
           type: 'success',
@@ -148,10 +118,9 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
           onClose();
         }, 2200);
       } else {
-        // Both failed
         setMessage({
           type: 'error',
-          text: backendData?.message || emailData?.message || 'Unable to submit your enquiry. Please try again.',
+          text: data?.message || 'Unable to submit your enquiry. Please try again.',
         });
       }
     } catch (err) {
