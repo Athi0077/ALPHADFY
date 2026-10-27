@@ -17,11 +17,13 @@ const ROTATING_ICONS = [
 
 export default function About() {
   const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const [hasCycled, setHasCycled] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setHasCycled(true);
       setCurrentIconIndex((prev) => (prev + 1) % ROTATING_ICONS.length);
-    }, 2000);
+    }, 2500);
     return () => clearInterval(timer);
   }, []);
 
@@ -60,7 +62,9 @@ export default function About() {
             <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-[#D9A441]/12 border-2 border-[#D9A441]/40 flex items-center justify-center shadow-[0_0_50px_rgba(217,164,65,0.25)] transition-transform duration-500 group-hover:scale-105">
               <i
                 key={currentItem.icon}
-                className={`fa-solid ${currentItem.icon} text-4xl sm:text-5xl text-[#F4C65D] animate-icon-cycle`}
+                className={`fa-solid ${currentItem.icon} text-4xl sm:text-5xl text-[#F4C65D] ${
+                  hasCycled ? 'animate-icon-cycle' : ''
+                }`}
                 style={{ filter: 'drop-shadow(0 0 16px rgba(244, 198, 93, 0.65))' }}
                 aria-label={currentItem.label}
               />
@@ -69,7 +73,9 @@ export default function About() {
             {/* Plan label badge */}
             <div
               key={currentItem.label}
-              className="mt-3 px-3 py-1 rounded-full bg-[#0B1220]/80 border border-[#D9A441]/35 backdrop-blur-md text-xs font-bold text-[#F4C65D] tracking-wide animate-icon-cycle shadow-md"
+              className={`mt-3 px-3 py-1 rounded-full bg-[#0B1220]/80 border border-[#D9A441]/35 backdrop-blur-md text-xs font-bold text-[#F4C65D] tracking-wide shadow-md ${
+                hasCycled ? 'animate-icon-cycle' : ''
+              }`}
             >
               {currentItem.label}
             </div>
@@ -80,7 +86,10 @@ export default function About() {
                 <button
                   key={item.icon}
                   type="button"
-                  onClick={() => setCurrentIconIndex(idx)}
+                  onClick={() => {
+                    setHasCycled(true);
+                    setCurrentIconIndex(idx);
+                  }}
                   className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                     idx === currentIconIndex
                       ? 'w-5 bg-[#D9A441]'

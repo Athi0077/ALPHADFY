@@ -119,12 +119,12 @@ html {
 
 @keyframes iconCycleIn {
   0% {
-    opacity: 0;
-    transform: scale(0.6) translateY(8px);
+    opacity: 0.35;
+    transform: scale(0.85) translateY(4px);
   }
   60% {
     opacity: 1;
-    transform: scale(1.1) translateY(-2px);
+    transform: scale(1.05) translateY(-1px);
   }
   100% {
     opacity: 1;
@@ -133,7 +133,7 @@ html {
 }
 
 .animate-icon-cycle {
-  animation: iconCycleIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: iconCycleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Button Metallic Shine Animation (Left to Right every 2s) */
@@ -194,20 +194,18 @@ html {
 #butterfly-bg .wing::after {
   background: linear-gradient(135deg, #F4C65D 0%, #D9A441 55%, #B88328 100%) !important;
   border: 1px solid rgba(184, 131, 40, 0.45) !important;
-  box-shadow: 0 0 6px rgba(217, 164, 65, 0.45) !important;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 4px rgba(217, 164, 65, 0.35) !important;
 }
 
 #butterfly-bg > div > div::after,
 #butterfly-bg div:not(.wing)::after {
   background: linear-gradient(180deg, #D9A441 0%, #996B15 100%) !important;
-  box-shadow: 0 0 4px rgba(184, 131, 40, 0.6) !important;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 3px rgba(184, 131, 40, 0.4) !important;
 }
 
 #butterfly-bg > div > div {
-  filter: drop-shadow(0 2px 5px rgba(217, 164, 65, 0.45));
-  transition: filter 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(217, 164, 65, 0.35));
+  will-change: transform;
 }
 
 /* DARK MODE -> PURE WHITE COLOR */
@@ -221,7 +219,7 @@ body.dark-mode #butterfly-bg .wing::after,
 #butterfly-bg[data-theme="dark"] .wing::after {
   background: #FFFFFF !important;
   border: 1px solid rgba(255, 255, 255, 0.65) !important;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6) !important;
 }
 
 .dark #butterfly-bg > div > div::after,
@@ -233,14 +231,33 @@ body.dark-mode #butterfly-bg div:not(.wing)::after,
 #butterfly-bg[data-theme="dark"] > div > div::after,
 #butterfly-bg[data-theme="dark"] div:not(.wing)::after {
   background: #FFFFFF !important;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.7) !important;
 }
 
 .dark #butterfly-bg > div > div,
 [data-theme="dark"] #butterfly-bg > div > div,
 body.dark-mode #butterfly-bg > div > div,
 #butterfly-bg[data-theme="dark"] > div > div {
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.65)) !important;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5)) !important;
+  will-change: transform;
+}
+
+/* ============================================================
+   Reduced Motion Accessibility Support
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  #butterfly-bg {
+    display: none !important;
+  }
 }
 
 

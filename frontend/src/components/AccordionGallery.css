@@ -177,6 +177,10 @@
   margin-top: 3px;
 }
 
+.ag-panel--active .ag-panel__bar {
+  opacity: 1;
+}
+
 .ag-panel__text {
   color: var(--ag-text);
   font-family: inherit;

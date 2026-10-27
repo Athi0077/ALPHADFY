@@ -8,18 +8,40 @@ const statsData = [
 ];
 
 export default function Stats() {
-  const [counts, setCounts] = useState(statsData.map(() => 0));
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [counts, setCounts] = useState(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return statsData.map((item) => item.target);
+    }
+    return statsData.map(() => 0);
+  });
+  const [hasAnimated, setHasAnimated] = useState(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return true;
+    }
+    return false;
+  });
   const sectionRef = useRef(null);
 
   useEffect(() => {
+    if (hasAnimated) return;
+
+    let rafId = null;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
         if (entry.isIntersecting && !hasAnimated) {
           setHasAnimated(true);
 
-          const duration = 1600;
+          const duration = 600;
           const startTime = performance.now();
 
           const update = (now) => {
@@ -33,23 +55,26 @@ export default function Stats() {
             );
 
             if (progress < 1) {
-              requestAnimationFrame(update);
+              rafId = requestAnimationFrame(update);
             } else {
               setCounts(statsData.map((item) => item.target));
             }
           };
 
-          requestAnimationFrame(update);
+          rafId = requestAnimationFrame(update);
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0.1 }
     );
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [hasAnimated]);
 
   return (

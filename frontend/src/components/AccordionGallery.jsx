@@ -99,7 +99,7 @@ const AccordionGallery = ({
 
         if (showLabels && bar && text) {
           if (isActive) {
-            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
+            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : Math.min(stagger, 0.03) }, 0);
           } else {
             tl.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
           }
@@ -135,19 +135,28 @@ const AccordionGallery = ({
       const size = Math.max(140, usable * Math.min(Math.max(expandRatio, 0.2), 0.9) * 1.22);
       mediaSizeRef.current = size;
       el.style.setProperty('--ag-media-size', `${size}px`);
-      applyLayout(!firstRunRef.current);
+      // Measurement / resize should update layout immediately with zero animation
+      applyLayout(false);
     };
 
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      tlRef.current?.kill();
+    };
   }, [applyLayout, gap, count, expandRatio, vertical]);
 
+  // Animate only when active index changes after initial mount
   useEffect(() => {
-    applyLayout(!firstRunRef.current);
-    firstRunRef.current = false;
-  }, [applyLayout]);
+    if (firstRunRef.current) {
+      firstRunRef.current = false;
+      applyLayout(false);
+      return;
+    }
+    applyLayout(true);
+  }, [active, applyLayout]);
 
   useEffect(
     () => () => {

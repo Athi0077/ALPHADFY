@@ -22,7 +22,7 @@ export default function App() {
       if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         return 'dark';
       }
-    } catch (_) {}
+    } catch {}
     return 'light';
   });
 
@@ -43,10 +43,13 @@ export default function App() {
     }
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch (_) {}
+    } catch {}
   }, [theme]);
 
+  const [themeTransitionEnabled, setThemeTransitionEnabled] = useState(false);
+
   const toggleTheme = () => {
+    setThemeTransitionEnabled(true);
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
@@ -60,7 +63,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-slate-50 dark:bg-[#0B1220] text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className={`min-h-screen flex flex-col relative bg-slate-50 dark:bg-[#0B1220] text-slate-900 dark:text-slate-100 ${themeTransitionEnabled ? 'transition-colors duration-300' : ''}`}>
       {/* Background Weather / Butterfly Animation */}
       <ButterflyBg theme={theme} />
 
@@ -73,11 +76,11 @@ export default function App() {
 
       {/* Main Page Content */}
       <main className="flex-grow relative z-10">
-        <Hero onOpenQuote={() => handleOpenQuote('')} theme={theme} />
+        <Hero onOpenQuote={() => handleOpenQuote('')} />
         <Stats />
         <About />
         <Insurance onSelectPlan={(plan) => handleOpenQuote(plan)} />
-        <WhyUs theme={theme} />
+        <WhyUs />
         <Partners />
         <Contact />
         <PreFooterCTA onOpenQuote={() => handleOpenQuote('')} />

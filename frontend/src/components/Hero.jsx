@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Hero({ onOpenQuote, theme }) {
+export default function Hero({ onOpenQuote }) {
   const scrollToInsurance = () => {
     const section = document.getElementById('insurance');
     if (section) {

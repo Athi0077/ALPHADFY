@@ -24,7 +24,7 @@ const reasons = [
   },
 ];
 
-export default function WhyUs({ theme = 'dark' }) {
+export default function WhyUs() {
   return (
     <section id="why-us" className="py-24 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Section Header */}

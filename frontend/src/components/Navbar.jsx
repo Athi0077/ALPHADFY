@@ -41,7 +41,7 @@ export default function Navbar({ onOpenQuote, theme, onToggleTheme }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${
+      className={`fixed top-0 left-0 w-full z-50 transition-[height,background-color,border-color,box-shadow] duration-300 border-b ${
         isScrolled
           ? 'h-[72px] bg-white/95 dark:bg-[#0B1220]/95 backdrop-blur-md shadow-md dark:shadow-black/50 border-[#D9A441]/25'
           : 'h-[84px] bg-slate-50/90 dark:bg-[#0B1220]/90 backdrop-blur-md border-[#D9A441]/15'
@@ -58,7 +58,7 @@ export default function Navbar({ onOpenQuote, theme, onToggleTheme }) {
           <img
             src="/screen1.png"
             alt="ALPHADFY"
-            className={`w-auto object-contain transition-all duration-300 ${
+            className={`w-auto object-contain transition-[height,max-width] duration-300 ${
               isScrolled ? 'h-9 max-w-[190px]' : 'h-11 max-w-[230px]'
             }`}
           />
