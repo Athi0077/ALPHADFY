@@ -11,10 +11,15 @@ import PreFooterCTA from './components/PreFooterCTA';
 import Footer from './components/Footer';
 import QuoteModal from './components/QuoteModal';
 import ButterflyBg from './components/ButterflyBg';
+import { prewarmBackend } from './utils/api';
 
 const THEME_STORAGE_KEY = 'alphadfy-theme';
 
 export default function App() {
+  // Wake up backend container as soon as the visitor lands on the site
+  useEffect(() => {
+    prewarmBackend();
+  }, []);
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY);

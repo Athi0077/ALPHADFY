@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com').trim();
-const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
-const ENQUIRY_ENDPOINT = `${API_BASE_URL}/api/enquiries`;
+import { ENQUIRY_ENDPOINT, prewarmBackend } from '../utils/api';
 
 export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
   const [formData, setFormData] = useState({
@@ -13,18 +10,21 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [slowNotice, setSlowNotice] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const nameInputRef = useRef(null);
 
-  // Sync initialPlan when modal opens
+  // Sync initialPlan and prewarm backend when modal opens
   useEffect(() => {
     if (isOpen) {
+      prewarmBackend();
       setFormData((prev) => ({
         ...prev,
         plan: initialPlan || prev.plan,
       }));
       setMessage({ type: '', text: '' });
       setIsSubmitting(false);
+      setSlowNotice(false);
 
       // Focus first input
       setTimeout(() => {
@@ -85,6 +85,14 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
     // Clear previous messages and start loading
     setMessage({ type: '', text: '' });
     setIsSubmitting(true);
+    setSlowNotice(false);
+
+    const slowTimer = setTimeout(() => {
+      setSlowNotice(true);
+    }, 2500);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 40000);
 
     try {
       const response = await fetch(ENQUIRY_ENDPOINT, {
@@ -93,6 +101,7 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
+        signal: controller.signal,
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
@@ -125,11 +134,21 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
       }
     } catch (err) {
       console.error('[Enquiry submission error]:', err);
-      setMessage({
-        type: 'error',
-        text: 'Unable to submit your enquiry. Please try again.',
-      });
+      if (err.name === 'AbortError') {
+        setMessage({
+          type: 'error',
+          text: 'The server took longer than expected to respond. Please verify your connection and try again.',
+        });
+      } else {
+        setMessage({
+          type: 'error',
+          text: 'Unable to submit your enquiry. Please check your connection and try again.',
+        });
+      }
     } finally {
+      clearTimeout(slowTimer);
+      clearTimeout(timeoutId);
+      setSlowNotice(false);
       setIsSubmitting(false);
     }
   };
@@ -269,6 +288,11 @@ export default function QuoteModal({ isOpen, onClose, initialPlan = '' }) {
                 <span>Submit Enquiry</span>
               )}
             </button>
+            {isSubmitting && slowNotice && (
+              <p className="text-xs text-center text-[#B88328] dark:text-[#F4C65D] mt-2 animate-pulse font-medium">
+                Connecting to secure server... Please wait a moment.
+              </p>
+            )}
           </div>
 
           {/* Feedback Message */}

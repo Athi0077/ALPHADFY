@@ -8,6 +8,9 @@ const statsData = [
 ];
 
 export default function Stats() {
+  const sectionRef = useRef(null);
+  const hasAnimatedRef = useRef(false);
+
   const [counts, setCounts] = useState(() => {
     if (
       typeof window !== 'undefined' &&
@@ -18,64 +21,81 @@ export default function Stats() {
     }
     return statsData.map(() => 0);
   });
-  const [hasAnimated, setHasAnimated] = useState(() => {
+
+  useEffect(() => {
+    if (hasAnimatedRef.current) return;
+
+    // If user prefers reduced motion, already initialized with targets
     if (
       typeof window !== 'undefined' &&
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
-      return true;
+      hasAnimatedRef.current = true;
+      return;
     }
-    return false;
-  });
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    if (hasAnimated) return;
 
     let rafId = null;
+    let fallbackTimer = null;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
+    const startCounting = () => {
+      if (hasAnimatedRef.current) return;
+      hasAnimatedRef.current = true;
 
-          const duration = 600;
-          const startTime = performance.now();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
 
-          const update = (now) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease-out quad
-            const ease = 1 - (1 - progress) * (1 - progress);
+      const duration = 1000;
+      const startTime = performance.now();
 
-            setCounts(
-              statsData.map((item) => Math.floor(item.target * ease))
-            );
+      const update = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out quad
+        const ease = 1 - (1 - progress) * (1 - progress);
 
-            if (progress < 1) {
-              rafId = requestAnimationFrame(update);
-            } else {
-              setCounts(statsData.map((item) => item.target));
-            }
-          };
+        setCounts(
+          statsData.map((item) => Math.floor(item.target * ease))
+        );
 
+        if (progress < 1) {
           rafId = requestAnimationFrame(update);
+        } else {
+          setCounts(statsData.map((item) => item.target));
         }
-      },
-      { threshold: 0.1 }
-    );
+      };
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      rafId = requestAnimationFrame(update);
+    };
+
+    let observer = null;
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const [entry] = entries;
+          if (entry.isIntersecting) {
+            startCounting();
+            if (observer) observer.disconnect();
+          }
+        },
+        { threshold: 0.1, rootMargin: '60px' }
+      );
+
+      if (sectionRef.current) {
+        observer.observe(sectionRef.current);
+      }
     }
 
+    // Safety fallback: ensure numbers are never stuck at 0 if observer takes time or fails
+    fallbackTimer = setTimeout(() => {
+      startCounting();
+    }, 1200);
+
     return () => {
-      observer.disconnect();
+      if (observer) observer.disconnect();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [hasAnimated]);
+  }, []);
 
   return (
     <section
