@@ -1,4 +1,4 @@
-const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://alphadfy.onrender.com').trim();
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://api.alphadfy.in').trim();
 export const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
 export const ENQUIRY_ENDPOINT = `${API_BASE_URL}/api/enquiries`;
 export const HEALTH_ENDPOINT = `${API_BASE_URL}/api/health`;
